@@ -1,2 +1,2 @@
-'use strict';
-require("./system");
+"use strict";
+require("./system/system");

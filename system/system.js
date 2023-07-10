@@ -3,12 +3,22 @@
 const port = process.env.PORT || 3006;
 
 const ioServer = require("socket.io")(3006);
+const { v4: uuidv4 } = require("uuid");
+
+const Queue = {
+  flights: {},
+};
 
 ioServer.on("connection", (socket) => {
   console.log("connected to server");
 
   socket.on("new-flight", (flight) => {
     ioServer.emit("new-flight", flight);
+
+    let id = uuidv4();
+
+    Queue.flights[id] = flight;
+
     console.log(`Flight {
     event: 'new-flight',
     time:  ${new Date().toLocaleDateString()}  ${new Date().toLocaleTimeString()},
@@ -31,6 +41,18 @@ ioServer.on("connection", (socket) => {
       pilot: ${flight.pilot},
       flightID: ${flight.flightID}
     }`);
+  });
+
+  socket.on("get_all", (filght) => {
+    Object.keys(Queue.flights).forEach((id) => {
+      socket.emit("flight", { id: id, filght: Queue.flights[id] });
+    
+    }); 
+     console.log(Queue.flights);
+  });
+
+  socket.on("delete", (filght) => {
+    delete Queue.flights[filght.id];
   });
 });
 

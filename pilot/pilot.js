@@ -6,6 +6,7 @@ let host = `http://localhost:3006`;
 const airline = io.connect(`${host}/airline`);
 const connection = io.connect(host);
 
+
 connection.on("new-flight", (flight) => {
   setTimeout(() => {
     airline.emit("took-off", flight);
@@ -26,4 +27,11 @@ connection.on("new-flight", (flight) => {
     connection.emit("arrived", flight);
 
   }, 17000);
+
+  connection.emit("get_all");
+
+  connection.on("flight", (flight)=>{
+    console.log(`Pilot:Sorry i didn't catch this flight ID ${flight.flightID}`  );
+    connection.emit("delete",flight)
+  })
 });

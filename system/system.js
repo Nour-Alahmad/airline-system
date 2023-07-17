@@ -18,6 +18,7 @@ ioServer.on("connection", (socket) => {
     let id = uuidv4();
 
     Queue.flights[id] = flight;
+    console.log('Queue V1 : ', Queue);
 
     console.log(`Flight {
     event: 'new-flight',
@@ -43,7 +44,7 @@ ioServer.on("connection", (socket) => {
     }`);
   });
 
-  socket.on("get_all", (filght) => {
+  socket.on("get_all", () => {
     Object.keys(Queue.flights).forEach((id) => {
       socket.emit("flight", { id: id, filght: Queue.flights[id] });
     
@@ -53,6 +54,8 @@ ioServer.on("connection", (socket) => {
 
   socket.on("delete", (filght) => {
     delete Queue.flights[filght.id];
+    console.log('Queue V2 : ', Queue);
+
   });
 });
 
